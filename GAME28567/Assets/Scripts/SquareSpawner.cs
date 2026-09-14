@@ -34,7 +34,6 @@ public class SquareSpawner : MonoBehaviour
 
     void Update()
     {
-        //TASK A
 
         //sets the size of the square
         dist = length/2;
@@ -67,7 +66,6 @@ public class SquareSpawner : MonoBehaviour
             Debug.DrawLine(coords[i+1], coords[i+2], Color.white);
         }
 
-        //TASK B
 
         //draw a semi-transparent square at the position of the mouse at all times with the size of the size variable
         Debug.DrawLine(botleft, topleft, transparent); //Draws left side
@@ -75,7 +73,6 @@ public class SquareSpawner : MonoBehaviour
         Debug.DrawLine(botright, topright, transparent); //Draws right side
         Debug.DrawLine(topleft, topright, transparent); //Draws top side
 
-        //TASK C
 
         //check if the mouse wheel is scrolled up
         if (Mouse.current.scroll.ReadValue().y > 0){ //if the mouse wheel is scrolled up, increase the size stored in the size variable

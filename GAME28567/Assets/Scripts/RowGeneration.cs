@@ -7,6 +7,7 @@ using System.Collections.Generic;
 public class RowGeneration : MonoBehaviour
 {
     public TMP_InputField input;
+    //array that keeps track of all possible digits
     char[] digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     int num;
     float size;
@@ -29,13 +30,14 @@ public class RowGeneration : MonoBehaviour
                 Debug.DrawLine(coords[i], coords[i+2], Color.white);//right side
                 Debug.DrawLine(coords[i+1], coords[i+3], Color.white);//left side
             }
-
+            //top and bottom lines
             Debug.DrawLine(coords[coords.Count-1], coords[coords.Count-2]);
             Debug.DrawLine(coords[coords.Count-3], coords[coords.Count-4]);
 
         }
 
     }
+
     public void UpdateNumber(){
         Debug.Log(input.text);
     }
@@ -68,16 +70,9 @@ public class RowGeneration : MonoBehaviour
             }
         }
 
-        
-
-
-
-        
-
-
-
     }
 
+    //generates squares for an odd number
     public void GenerateOdd(){
         for(int i = 1; i <= num; i += 2){
             coords.Add(new Vector2(startpoint.x + i*size/2, startpoint.y + size/2));//top right
@@ -86,7 +81,8 @@ public class RowGeneration : MonoBehaviour
             coords.Add(new Vector2(startpoint.x - i*size/2, startpoint.y - size/2));//bottom left
         }
     }
-
+    
+    //generates squares for an even number
     public void GenerateEven(){
         for(int i = 0; i <= num; i += 2){
             coords.Add(new Vector2(startpoint.x + i*size/2, startpoint.y + size/2));//top right
