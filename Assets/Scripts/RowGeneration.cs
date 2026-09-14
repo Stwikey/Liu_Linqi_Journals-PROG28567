@@ -63,9 +63,9 @@ public class RowGeneration : MonoBehaviour
             while (coords.Count > 0){
                 coords.RemoveAt(0);
             }
-            if (num % 2 == 0){
+            if (num % 2 == 0 && num != 0){
                 GenerateEven();
-            }else{
+            }else if (num != 0) {
                 GenerateOdd();
             }
         }
