@@ -423,6 +423,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RowGeneration
   input: {fileID: 1049599206}
+  coords: []
 --- !u!4 &924518180
 Transform:
   m_ObjectHideFlags: 0
