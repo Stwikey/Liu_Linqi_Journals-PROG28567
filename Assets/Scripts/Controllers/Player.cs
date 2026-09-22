@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿    using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine;
 
@@ -14,6 +14,8 @@ public class Player : MonoBehaviour
     public int numberOfTrailBombs = 3;
     
     public int dist = 2;
+
+    public float ratio = 2f;
     // Update is called once per frame
     void Update()
     {
@@ -26,12 +28,21 @@ public class Player : MonoBehaviour
         if(Keyboard.current.tKey.wasPressedThisFrame){
             //if the t key is pressed, spawn a bomb at an offset
             SpawnBombTrail(bombTrailSpacing, numberOfTrailBombs);
-        }
+        }   
 
         if(Keyboard.current.oKey.wasPressedThisFrame){
             //if the oKey is pressed, spawn a corner bomb
             SpawnBombOnRandomCorner(dist);
         }
+
+        if(Keyboard.current.wKey.wasPressedThisFrame){
+            //if the w key is pressed, warp to the player
+            WarpPlayer(enemyTransform, ratio);
+        }
+
+        //draw a green line to the asteroids within range
+        DetectAsteroids(100f, asteroidTransforms);
+
 
     }
 
@@ -86,6 +97,24 @@ public class Player : MonoBehaviour
 
     }
 
-    //public void WarpPlayer(Transform target, float)
+    public void WarpPlayer(Transform target, float ratio){
+        //check if ratio is less than or equal to one
+        if (ratio > 1){
+            ratio = 1;
+        }
+        //lerp towards the player 
+        transform.position = Vector3.Lerp(transform.position, target.position, ratio);
+    }
+
+    
+    public void DetectAsteroids(float inMaxRange, List<Transform> inAsteroids){
+        for(int i = 0; i < inAsteroids.Count; i++){
+            //check if the asteroid is in range
+            if(Vector3.Distance(inAsteroids[i].position, transform.position) <= inMaxRange){
+                //draw a line from the player position to the enemy position
+                Debug.DrawLine(transform.position, transform.position + (inAsteroids[i].position-transform.position).normalized*2.5f, Color.green);
+            }
+        }
+    }
 
 }
