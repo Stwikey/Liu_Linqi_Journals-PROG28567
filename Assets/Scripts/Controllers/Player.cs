@@ -1,4 +1,4 @@
-﻿    using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine;
 
@@ -16,7 +16,22 @@ public class Player : MonoBehaviour
     public int dist = 2;
 
     public float ratio = 2f;
+
+    public float speed = 1f;
+    public float accelerationTime = 3f;
+    public float maxSpeed = 3f;
+    public float time;
+    private float acceleration;
+    public float deceleration;
+    public float decelerationTime = 5f;
+    public Vector3 velocity = Vector3.zero;
+    public float decelerationTimer;
     // Update is called once per frame
+
+    void Start(){
+        acceleration = maxSpeed/accelerationTime;
+        deceleration = maxSpeed/decelerationTime;
+    }
     void Update()
     {
         //checks if the b key is pressed
@@ -39,6 +54,8 @@ public class Player : MonoBehaviour
             //if the w key is pressed, warp to the player
             WarpPlayer(enemyTransform, ratio);
         }
+
+        PlayerMovement();
 
         //draw a green line to the asteroids within range
         DetectAsteroids(100f, asteroidTransforms);
@@ -116,5 +133,61 @@ public class Player : MonoBehaviour
             }
         }
     }
+    //moves the player in the direction of which arrow key is pressed
+    public void PlayerMovement(){
+        time += Time.deltaTime;
+
+        if(Keyboard.current.upArrowKey.isPressed){
+            decelerationTimer = 0;
+            //transform.position += speed * Vector3.up * Time.deltaTime;
+            velocity += Vector3.up * acceleration * Time.deltaTime;
+        }
+        else if(Keyboard.current.downArrowKey.isPressed){
+            decelerationTimer = 0;
+            //transform.position += speed * Vector3.down * Time.deltaTime;
+            velocity += acceleration * Vector3.down * Time.deltaTime;
+        }
+        else if(Keyboard.current.rightArrowKey.isPressed){
+            decelerationTimer = 0;
+            //transform.position += speed * Vector3.right * Time.deltaTime;
+            velocity += acceleration * Vector3.right * Time.deltaTime;
+        }
+        else if(Keyboard.current.leftArrowKey.isPressed){
+            decelerationTimer = 0;
+            //transform.position += speed * Vector3.left * Time.deltaTime;
+            velocity += acceleration * Vector3.left * Time.deltaTime;
+        }else{
+            decelerationTimer += Time.deltaTime;
+            time = 0;
+            //if no key is pressed, decelerate the player in the opposite direction
+            Vector3 value = deceleration * -1 * velocity.normalized * Time.deltaTime;
+            if(velocity.magnitude == 0){//if the player isn't moving, keep them at a resting position
+                velocity = Vector3.zero;
+            }
+            else if(velocity.magnitude > 0 ){//if the player is still moving
+                if((velocity.magnitude - value.magnitude) <= 0){ //if the player will start moving in the opposite direction
+                    velocity = Vector3.zero; //tell the player to stop moving
+                    Debug.Log("Deceleration Time: " + decelerationTimer);
+                    Debug.Log("Velocity: " + velocity.magnitude);
+
+                }else{
+                    velocity += value;//else, keep decelerating
+                }
+            }
+           
+          
+        }
+
+        transform.position += velocity*Time.deltaTime; //accelerates the player
+
+        if(velocity.magnitude >= maxSpeed){//checks if the current velocity is greater than the max speed
+            Debug.Log("Time: " + time);//prints the current time to the console
+            Debug.Log("Velocity: " + velocity.magnitude);//prints the current velocity to the console
+            velocity = maxSpeed*velocity.normalized;//reset the current velocity to the max speed
+            
+        }
+    }
+
+
 
 }
