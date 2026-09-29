@@ -31,7 +31,6 @@ public class Asteroid : MonoBehaviour
         transform.position += moveSpeed * (point - transform.position).normalized * Time.deltaTime;
         //check if it is in within distance of the point
         if((transform.position - point).magnitude <= arrivalDistance){
-            Debug.Log("hu huh");
             //if it is, choose a new point
             direction = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f);
             //offset a point in the stored direction by the max distance

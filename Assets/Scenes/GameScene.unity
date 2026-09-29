@@ -1108,7 +1108,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Asteroid
   moveSpeed: 2
-  arrivalDistance: 4
+  arrivalDistance: 1
   maxFloatDistance: 4
   direction: {x: 0, y: 0, z: 0}
   point: {x: 0, y: 0, z: 0}
