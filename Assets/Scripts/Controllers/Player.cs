@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     public Transform enemyTransform;
     public GameObject bombPrefab;
     public List<Transform> asteroidTransforms;
+    public GameObject powerUp;
     
     [SerializeField] public Vector3 offset = new Vector3(0f, 1f, 0f);
 
@@ -27,6 +28,9 @@ public class Player : MonoBehaviour
     public Vector3 velocity = Vector3.zero;
     public float decelerationTimer;
     // Update is called once per frame
+
+    float angle;
+    Color radarColor;
 
     void Start(){
         acceleration = maxSpeed/accelerationTime;
@@ -55,10 +59,18 @@ public class Player : MonoBehaviour
             WarpPlayer(enemyTransform, ratio);
         }
 
+        if(Keyboard.current.eKey.wasPressedThisFrame){
+            //if the e key is pressed, spawn power ups
+            SpawnPowerups(4, 4);
+        }
+
+
         PlayerMovement();
 
         //draw a green line to the asteroids within range
-        DetectAsteroids(100f, asteroidTransforms);
+        //DetectAsteroids(100f, asteroidTransforms);
+
+        EnemyRadar(5, 7);
 
 
     }
@@ -187,6 +199,41 @@ public class Player : MonoBehaviour
             
         }
     }
+
+    public void EnemyRadar(float radius, int circlePoints){
+        if ((transform.position - enemyTransform.position).magnitude <= radius){
+            radarColor = Color.red;
+        }else{
+            radarColor = Color.green;
+        }
+
+        //iterates through all the points
+        for(int i = 1; i <= circlePoints; i ++){
+            //calculate the first angle
+            angle = Mathf.Deg2Rad*((360f/circlePoints)*i);
+            //calculate the first point
+            Vector2 firstPoint = new Vector2(radius*Mathf.Cos(angle) + transform.position.x, radius*Mathf.Sin(angle) + transform.position.y);
+            //calculate the second angle
+            angle = Mathf.Deg2Rad*((360f/circlePoints)*(i+1));
+            //calculate the second point
+            Vector2 secondPoint = new Vector2(radius*Mathf.Cos(angle) + transform.position.x, radius*Mathf.Sin(angle) + transform.position.y);
+            //draws a line from the first to the second point
+            Debug.DrawLine(firstPoint, secondPoint, radarColor);
+        }
+    }
+
+    public void SpawnPowerups(float radius, int numberOfPowerups){
+        //iterates through all the points
+        for(int i = 1; i <= numberOfPowerups; i ++){
+            //calculate the angle
+            angle = Mathf.Deg2Rad*((360f/numberOfPowerups)*i);
+            //calculate the point
+            Vector2 Point = new Vector2(radius*Mathf.Cos(angle) + transform.position.x, radius*Mathf.Sin(angle) + transform.position.y);
+            //spawn the power up
+            Instantiate(powerUp, Point, Quaternion.identity);
+        }
+    }
+    
 
 
 
