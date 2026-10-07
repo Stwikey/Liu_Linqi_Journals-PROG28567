@@ -16,7 +16,7 @@ public class Moon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        OrbitalMotion(3, 2, planetTransform);
+        OrbitalMotion(3, 3, planetTransform);
 
     }
 
@@ -25,8 +25,8 @@ public class Moon : MonoBehaviour
         angle += speed*Time.deltaTime;
         //calculate the point
         Vector3 point = new Vector3(radius*Mathf.Cos(angle) + target.position.x, radius*Mathf.Sin(angle) + target.position.y, 0f);
-        //spawn the power up
-        transform.position += (point - transform.position);
+        //change the position of the moon
+        transform.position += (point - transform.position)*Time.deltaTime;
         
     }
 
