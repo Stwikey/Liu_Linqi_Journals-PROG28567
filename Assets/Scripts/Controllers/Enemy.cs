@@ -19,6 +19,14 @@ public class Enemy : MonoBehaviour
     int onPoint = 0;
 
     public List<Vector3> points;
+    public float angle;
+    Color radarColor;
+
+    public List<GameObject> bullets;
+    public List<Vector3> directions;
+    public GameObject powerUp;
+
+
 
     private void Start(){
         playerPosition = playerTransform.position;
@@ -30,7 +38,9 @@ public class Enemy : MonoBehaviour
         //EnemyMovement();
         //IdleState();
         //DashState();
-        Patrol(points, 180);
+        //Patrol(points, 180);
+
+        Radar(3, 10);
     }
 
     /**public void EnemyMovement(){
@@ -109,5 +119,41 @@ public class Enemy : MonoBehaviour
         }
 
     }
+    public void Radar(float radius, int circlePoints){
+        if ((transform.position - playerTransform.position).magnitude <= radius){
+            radarColor = Color.red;
+            Vector3 direction = playerTransform.position - transform.position;
+            transform.up = direction.normalized;
+
+            GameObject bullet = Instantiate(powerUp, transform.up + transform.position, Quaternion.identity);
+            bullets.Add(bullet);
+            directions.Add((transform.position - bullet.transform.position).normalized);
+
+
+            transform.position += speed * direction.normalized * Time.deltaTime;
+        }else{
+            radarColor = Color.green;
+        }
+
+        //iterates through all the points
+        for(int i = 1; i <= circlePoints; i ++){
+            //calculate the first angle
+            angle = Mathf.Deg2Rad*((360f/circlePoints)*i);
+            //calculate the first point
+            Vector2 firstPoint = new Vector2(radius*Mathf.Cos(angle) + transform.position.x, radius*Mathf.Sin(angle) + transform.position.y);
+            //calculate the second angle
+            angle = Mathf.Deg2Rad*((360f/circlePoints)*(i+1));
+            //calculate the second point
+            Vector2 secondPoint = new Vector2(radius*Mathf.Cos(angle) + transform.position.x, radius*Mathf.Sin(angle) + transform.position.y);
+            //draws a line from the first to the second point
+            Debug.DrawLine(firstPoint, secondPoint, radarColor);
+        }
+
+        for(int i = 0; i < bullets.Count; i++){
+            bullets[i].transform.position += -directions[i] * 20f * Time.deltaTime;
+        }
+    }
 
 }
+
+    
