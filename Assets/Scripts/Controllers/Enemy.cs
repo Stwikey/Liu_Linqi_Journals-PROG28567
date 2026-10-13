@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class Enemy : MonoBehaviour
 {
@@ -15,7 +15,10 @@ public class Enemy : MonoBehaviour
     float t = 0f;
 
     public Vector3 previousPosition; 
-    public float speed = 5f;
+    public float speed = 1f;
+    int onPoint = 0;
+
+    public List<Vector3> points;
 
     private void Start(){
         playerPosition = playerTransform.position;
@@ -26,8 +29,8 @@ public class Enemy : MonoBehaviour
     {
         //EnemyMovement();
         //IdleState();
-        DashState();
-        
+        //DashState();
+        Patrol(points, 180);
     }
 
     /**public void EnemyMovement(){
@@ -64,7 +67,7 @@ public class Enemy : MonoBehaviour
     }
 
     //enemy dashes to the player
-    public void DashState(){
+    /**public void DashState(){
         //calculate the direction to the player
         Vector3 direction = previousPosition - transform.position;
         
@@ -87,6 +90,24 @@ public class Enemy : MonoBehaviour
         }
 
         
+    }**/
+
+    public void Patrol(List<Vector3> points, float degrees){
+        Vector3 point = points[onPoint];
+        Vector3 direction = (point - transform.position);
+        Vector3 offset = direction.normalized * speed * Time.deltaTime;
+    
+        if(offset.magnitude <= direction.magnitude){
+            transform.position = point;
+            if(onPoint == points.Count - 1){
+                onPoint = 0;
+            }else{
+                onPoint ++;
+            }
+        }else{
+            transform.position += offset;
+        }
+
     }
 
 }
