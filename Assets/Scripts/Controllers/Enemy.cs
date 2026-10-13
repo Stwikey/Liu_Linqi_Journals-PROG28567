@@ -73,8 +73,8 @@ public class Enemy : MonoBehaviour
         
         //chekc if the enemy is close enough to the player past position
 
-        Debug.Log(direction.magnitude);
-        Debug.Log(offset.magnitude);
+        //Debug.Log(direction.magnitude);
+       // Debug.Log(offset.magnitude);
         if (direction.magnitude <= offset.magnitude){
             //if it is, simply move the enemy to the position
             transform.position = previousPosition;

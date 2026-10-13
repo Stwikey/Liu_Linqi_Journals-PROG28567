@@ -28,9 +28,19 @@ public class Player : MonoBehaviour
     public Vector3 velocity = Vector3.zero;
     public float decelerationTimer;
     // Update is called once per frame
+    public float moveSpeed = 10f;
+
+
 
     float angle;
     Color radarColor;
+
+    public float rotationSpeed = 5f;
+    public List<GameObject> bullets;
+    public List<Vector3> directions;
+
+
+
 
     void Start(){
         acceleration = maxSpeed/accelerationTime;
@@ -41,37 +51,64 @@ public class Player : MonoBehaviour
         //checks if the b key is pressed
         if(Keyboard.current.bKey.wasPressedThisFrame){
             //if the b key is pressed, spawn a bomb at an offset
-            SpawnBombAtOffset(offset);
+            //SpawnBombAtOffset(offset);
         }
 
         if(Keyboard.current.tKey.wasPressedThisFrame){
             //if the t key is pressed, spawn a bomb at an offset
-            SpawnBombTrail(bombTrailSpacing, numberOfTrailBombs);
+            //SpawnBombTrail(bombTrailSpacing, numberOfTrailBombs);
         }   
 
         if(Keyboard.current.oKey.wasPressedThisFrame){
             //if the oKey is pressed, spawn a corner bomb
-            SpawnBombOnRandomCorner(dist);
+            //SpawnBombOnRandomCorner(dist);
         }
 
         if(Keyboard.current.wKey.wasPressedThisFrame){
             //if the w key is pressed, warp to the player
-            WarpPlayer(enemyTransform, ratio);
+            //WarpPlayer(enemyTransform, ratio);
         }
 
         if(Keyboard.current.eKey.wasPressedThisFrame){
             //if the e key is pressed, spawn power ups
-            SpawnPowerups(4, 4);
+            //SpawnPowerups(4, 4);
         }
 
 
-        PlayerMovement();
+        //PlayerMovement();
+
+        PlayerAttack();
 
         //draw a green line to the asteroids within range
         //DetectAsteroids(100f, asteroidTransforms);
 
-        EnemyRadar(5, 7);
+        //EnemyRadar(5, 7);
 
+
+    }
+
+    public void PlayerAttack(){
+        if(Keyboard.current.leftArrowKey.isPressed){
+            transform.Rotate(0f, 0f, rotationSpeed * Time.deltaTime);
+        }
+        if(Keyboard.current.rightArrowKey.isPressed){
+            transform.Rotate(0f, 0f, -rotationSpeed * Time.deltaTime);
+        }
+        if(Keyboard.current.upArrowKey.isPressed){
+            transform.position += transform.up * moveSpeed * Time.deltaTime;
+        }
+        if(Keyboard.current.downArrowKey.isPressed){
+            transform.position += -transform.up * moveSpeed * Time.deltaTime;
+        }
+        if(Keyboard.current.eKey.wasPressedThisFrame){
+            GameObject bullet = Instantiate(powerUp, transform.up + transform.position, Quaternion.identity);
+            bullets.Add(bullet);
+            directions.Add((transform.position - bullet.transform.position).normalized);
+        }
+
+        for(int i = 0; i < bullets.Count; i++){
+            bullets[i].transform.position += -directions[i] * 20f * Time.deltaTime;
+        }
 
     }
 
@@ -146,7 +183,7 @@ public class Player : MonoBehaviour
         }
     }
     //moves the player in the direction of which arrow key is pressed
-    public void PlayerMovement(){
+    /**public void PlayerMovement(){
         time += Time.deltaTime;
 
         if(Keyboard.current.upArrowKey.isPressed){
@@ -198,7 +235,7 @@ public class Player : MonoBehaviour
             velocity = maxSpeed*velocity.normalized;//reset the current velocity to the max speed
             
         }
-    }
+    }**/
 
     public void EnemyRadar(float radius, int circlePoints){
         if ((transform.position - enemyTransform.position).magnitude <= radius){

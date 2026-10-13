@@ -36,9 +36,13 @@ public class Stars : MonoBehaviour
         //reset the timer
         if (timer >= drawingTime){
             timer = 0;
+
+            //if the index reaches the end of the list
             if(index == starTransforms.Count - 2){
+                //reset it
                 index = 0;
             }else{
+                //else, go to the next star
                 index++;
             }
         }
