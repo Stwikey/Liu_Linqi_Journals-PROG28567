@@ -8,6 +8,8 @@ public class Player : MonoBehaviour
     public GameObject bombPrefab;
     public List<Transform> asteroidTransforms;
     public GameObject powerUp;
+    public Enemy enemyScript;
+    public GameObject enemy;
     
     [SerializeField] public Vector3 offset = new Vector3(0f, 1f, 0f);
 
@@ -38,6 +40,7 @@ public class Player : MonoBehaviour
     public float rotationSpeed = 5f;
     public List<GameObject> bullets;
     public List<Vector3> directions;
+
 
 
 
@@ -84,20 +87,26 @@ public class Player : MonoBehaviour
 
         //EnemyRadar(5, 7);
 
+        ClearUpBullets();
+
 
     }
 
     public void PlayerAttack(){
         if(Keyboard.current.leftArrowKey.isPressed){
+            //rotate the player to the left
             transform.Rotate(0f, 0f, rotationSpeed * Time.deltaTime);
         }
         if(Keyboard.current.rightArrowKey.isPressed){
+            //rotate the player to the right
             transform.Rotate(0f, 0f, -rotationSpeed * Time.deltaTime);
         }
         if(Keyboard.current.upArrowKey.isPressed){
+            //player moves forwards
             transform.position += transform.up * moveSpeed * Time.deltaTime;
         }
         if(Keyboard.current.downArrowKey.isPressed){
+            //players moves backwards
             transform.position += -transform.up * moveSpeed * Time.deltaTime;
         }
         if(Keyboard.current.eKey.wasPressedThisFrame){
@@ -108,8 +117,25 @@ public class Player : MonoBehaviour
 
         for(int i = 0; i < bullets.Count; i++){
             bullets[i].transform.position += -directions[i] * 20f * Time.deltaTime;
+            if((bullets[i].transform.position - enemyTransform.position).magnitude <= 0.75f){
+                Debug.Log("Enemy Hit!");
+            }
         }
 
+    }
+
+    public void ClearUpBullets(){
+        for(int i = 0; i < bullets.Count; i++){
+            //if the bullet is far from the player
+            if((bullets[i].transform.position - transform.position).magnitude >= 100f){
+                //destroy the bullet object
+                Destroy(bullets[i]);
+                //remove the bullet from the List
+                bullets.RemoveAt(i);
+                directions.RemoveAt(i);
+                i--;
+            }
+        }
     }
 
     //function to spawn a bomb at an offset
@@ -183,7 +209,7 @@ public class Player : MonoBehaviour
         }
     }
     //moves the player in the direction of which arrow key is pressed
-    /**public void PlayerMovement(){
+    public void PlayerMovement(){
         time += Time.deltaTime;
 
         if(Keyboard.current.upArrowKey.isPressed){
@@ -216,8 +242,8 @@ public class Player : MonoBehaviour
             else if(velocity.magnitude > 0 ){//if the player is still moving
                 if((velocity.magnitude - value.magnitude) <= 0){ //if the player will start moving in the opposite direction
                     velocity = Vector3.zero; //tell the player to stop moving
-                    Debug.Log("Deceleration Time: " + decelerationTimer);
-                    Debug.Log("Velocity: " + velocity.magnitude);
+                    //Debug.Log("Deceleration Time: " + decelerationTimer);
+                    //Debug.Log("Velocity: " + velocity.magnitude);
 
                 }else{
                     velocity += value;//else, keep decelerating
@@ -230,12 +256,12 @@ public class Player : MonoBehaviour
         transform.position += velocity*Time.deltaTime; //accelerates the player
 
         if(velocity.magnitude >= maxSpeed){//checks if the current velocity is greater than the max speed
-            Debug.Log("Time: " + time);//prints the current time to the console
-            Debug.Log("Velocity: " + velocity.magnitude);//prints the current velocity to the console
+            //Debug.Log("Time: " + time);//prints the current time to the console
+            //Debug.Log("Velocity: " + velocity.magnitude);//prints the current velocity to the console
             velocity = maxSpeed*velocity.normalized;//reset the current velocity to the max speed
             
         }
-    }**/
+    }
 
     public void EnemyRadar(float radius, int circlePoints){
         if ((transform.position - enemyTransform.position).magnitude <= radius){
